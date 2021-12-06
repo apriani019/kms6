@@ -21,9 +21,7 @@
 
     <title>LabMIPA UHO</title>
   </head>
-
-  <body id="page-top"">
-
+  <body>
     <!--Navbar-->
     <nav class="navbar navbar-expand-lg bg-black fixed-top">
       <div class="container-fluid">
@@ -114,66 +112,83 @@
 
           <!-- isi form -->
           <div class="container mt-5 mb-4">
-            <div class="alert alert-primary text-center mt-3 mb-4">FORMULIR PENGUSULAN ALAT DAN BAHAN</div>
+            
+             <?php
+                include "../koneksi.php";
 
-            <form action="hasil_usul.php" method="post" enctype="multipart/form-data">
-              <div class="mb-4">
-                <label for="namaAlatBahan" class="form-label">Nama Alat/Bahan</label>
-                <input type="text" class="form-control" id="namaAlatBahan" name="namaAlatBahan" aria-describedby="namaAB" placeholder="Nama">
-                <div id="namaAB" class="form-text">Masukkan nama alat/bahan yang akan diusulkan</div>
+                if(isset($_POST['submit'])) {
+                  $direktori = "ipload_alat/";
+                  $nama_file = $_FILES['foto']['name'];
+                  move_uploaded_file($_FILES['foto']['tmp_name'], $direktori.$nama_file);
+                  mysqli_query($conn, "INSERT INTO usul SET
+                  nama_alat_bahan = '$_POST[namaAlatBahan]',
+                  jenis = '$_POST[jenis]',
+                  jumlah = '$_POST[jumlah]',
+                  file = '$nama_file',
+                  keterangan = '$_POST[keterangan]'") or die (mysqli_error($conn));
+                  
+                  echo "<script>alert('Data Anda telah terkirim!')</script>";
+                }
+              ?>
+               
+            
+
+            <div class="alert alert-primary text-center mt-4 mb-4">DATA PENGUSULAN ALAT DAN BAHAN</div>
+
+            <p>Terima kasih telah melakukan pengusulan. Data Anda telah masuk dalam Daftar Usulan dan akan diperiksa oleh Kepala Laboratorium Matematika.</p>
+
+            <div class="card mt-4 mb-3">
+              <div class="card-header fw-bold">
+                Nama Alat/Bahan
               </div>
-
-              <div class="mb-4">
-                <label for="jenis" class="form-label">Jenis Pengusulan</label>
-                <select class="form-select" aria-label="Default select example" id="jenis" name="jenis" >
-                  <option value="Tidak ada" selected>--pilih kriteria--</option>
-                  <option value="Kerusakan alat">Kerusakan alat</option>
-                  <option value="Alat tidak berfungsi">Alat tidak berfungsi</option>
-                  <option value="Kekurangan bahan">Kekurangan bahan</option>
-                  <option value="Alat/Bahan tidak tersedia">Alat/Bahan tidak tersedia</option>
-                </select>
+              <div class="card-body">
+                <?php echo $_POST['namaAlatBahan'] ?>
               </div>
+            </div>
 
-              <div class="mb-4">
-                <label for="jumlah" class="form-label">Jumlah</label>
-                <input type="text" class="form-control" id="jumlah" name="jumlah" aria-describedby="jumlah" placeholder="1">
-                <div id="jumlah" class="form-text">Masukkan jumlah alat/bahan</div>
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Jenis Pengusulan
               </div>
-
-              <div class="mb-3" >
-                <label for="foto" class="form-label">Foto Alat/Bahan</label>
-                <input type="file" class="form-control" id="foto" name="foto" rows="3" aria-describedby="foto" placeholder="Masukkan teks di sini" ></input>
-                <div id="foto" class="form-text">Masukkan gambar jika Anda memilih 'Kerusakan Alat' atau 'Alat Tidak Berfungsi' pada kolom Jenis Pengusulan</div>
+              <div class="card-body">
+                <?php echo $_POST['jenis'] ?>
               </div>
+            </div>
 
-              <div class="mb-3" >
-                <label for="keterangan" class="form-label">Keterangan</label>
-                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" aria-describedby="keterangan" placeholder="Masukkan teks di sini" ></textarea>
-                <div id="keterangan" class="form-text">Jika ada keterangan tambahan, isi kolom ini</div>
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Jumlah
               </div>
+              <div class="card-body">
+                <?php echo $_POST['jumlah'] ?>
+              </div>
+            </div>
 
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Nama File Gambar
+              </div>
+              <div class="card-body">
+               <img src="upload_alat/<?php echo  $nama_file ?>" style="width: 200px">
+              </div>
+            </div>
 
-              <button type="submit" name="submit" class="btn btn-primary" >Kirim</button>
+            <div class="card mb-3">
+              <div class="card-header  fw-bold">
+                Keterangan
+              </div>
+              <div class="card-body">
+                <?php echo $_POST['keterangan'] ?>
+              </div>
+            </div>
 
-            </form>
+            <a href="usul.php" class="btn btn-primary mt-2">Kembali</a>
           </div>
         </div>
         <!-- end form -->
       </div>
     </section>
     <!-- end content -->
-    
-   
-
-    <script src="../alert/sweetalert2.all.min.js"></script>
-
-    <script>
-      btn-primary.forEach(function(el) {
-        el.addEventListener('click', function(e) {
-          e.preventDefault();
-        });
-      });
-    </script>
 
     <!-- Footer -->
     <footer class="text-center text-white pb-5 bg-black">
@@ -181,7 +196,15 @@
     </footer>
     <!-- EndFooter -->
 
-    
+    <script>
+      if(window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
+    </script>
+
+<script src="../alert/sweetalert2.all.min.js"></script>
+
+ 
 
     <!-- bootstrap js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
