@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css" />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="../css/sidebar.css" />
     <link rel="stylesheet" href="../css/navbar.css" />
+    <link rel="stylesheet" href="../css/sidebar.css" />
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
@@ -21,8 +21,7 @@
 
     <title>LabMIPA UHO</title>
   </head>
-
-  <body id="page-top"">
+  <body>
     <!--Navbar-->
     <nav class="navbar navbar-expand-lg bg-black fixed-top">
       <div class="container-fluid">
@@ -72,7 +71,7 @@
         <!-- sidebar -->
         <div class="col-md-2 sidebar" style="width: 26%">
           <!-- header -->
-          <header class="text-center text-light fs-4 mb-3 bg-primary pt-1">Matematika</header>
+          <header class="text-center text-light fs-4 mb-3 bg-primary pt-1"><i class="fas fa-square-root-alt me-2"></i>Matematika</header>
           <!-- end header -->
           
           <ul class="nav flex-column ms-3 mb-5">
@@ -85,78 +84,107 @@
               <hr class="bg-secondary" />
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="usul.php"><i class="fas fa-desktop me-2"></i>Pengusulan Alat dan Bahan</a>
+              <a class="nav-link text-primary" href="usul.php"><i class="fas fa-desktop me-2"></i> Pengusulan Alat dan Bahan</a>
               <hr class="bg-secondary" />
             </li>
             <li class="nav-item">
-              <a class="nav-link text-primary" href="jadwal.php"><i class="far fa-calendar me-2"></i> Jadwal Praktikum</a>
+              <a class="nav-link" href="jadwal.php"><i class="far fa-calendar me-2"></i> Jadwal Praktikum</a>
               <hr class="bg-secondary" />
             </li>
           </ul>
         </div>
         <!-- end sidebar -->
 
-        <!-- tabel -->
+        <!-- form -->
         <!-- judul -->
         <div class="col-md-10 mt-2 pt-4 bg-light text-black" style="width: 74%">
-          <h3><i class="far fa-calendar me-2"></i>JADWAL PRAKTIKUM</h3>
+          <h3><i class="fas fa-desktop me-2"></i></i>PENGAJUAN JADWAL PRAKTIKUM</h3>
 
           <!-- breadcrumb -->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none">Home</a></li>
               <li class="breadcrumb-item"><a href="dashboard.php" class="text-decoration-none">Matematika</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Jadwal Praktikum</li>
+              <li class="breadcrumb-item active" aria-current="page">Pengusulan Alat dan Bahan</li>
             </ol>
           </nav>
           <!-- end judul -->
 
-          <!-- isi jadwal -->
-          <div class="container mt-5 mb-4">
-            <div class="alert alert-primary text-center mt-3 mb-4">JADWAL PRAKTIKUM</div>
+          <!-- isi form -->
+          <div class="container mt-5 mb-4"> 
+            
+            <div class="alert alert-primary text-center mt-4 mb-4">DATA PENGAJUAN JADWAL PRAKTIKUM</div>
 
-            <table id="example" class="table table-striped table-bordered table-secondary table-hover mt-2" style="width:100%">
-                <thead>
-                    <tr class="text-center" >
-                        <th scope="col">No</th>
-                        <th scope="col">Mata Kuliah</th>
-                        <th scope="col">Semester</th>
-                        <th scope="col">Program Studi</th>
-                        <th scope="col">Asisten</th>
-                        <th scope="col">Laboratorium</th>
-                        <th scope="col">Hari</th>
-                        <th scope="col">Jam</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                      <?php
-                        include ('../koneksi.php');
-                        $no = 1;
-                        $ambil = mysqli_query($connect, "SELECT * FROM jadwal_mtk ORDER BY Semester");
-                        while ($tampil = mysqli_fetch_array($ambil)) {
-                          echo "
-                          <tr>
-                            <td>$no</td>
-                            <td>$tampil[nama_matkul]</td>
-                            <td>$tampil[Semester]</td>
-                            <td>$tampil[program_studi]</td>
-                            <td>$tampil[asisten]</td>
-                            <td>$tampil[laboratorium]</td>
-                            <td>$tampil[hari]</td>
-                            <td>$tampil[jam]</td>
-                          </tr>";
-                          $no++;
-                        }
-                      ?>  
-                    </tr>
-                </tbody>
-            </table>
-            <a href="ajukan.php" class="btn btn-primary mt-2  mb-3">Ajukan Jadwal</a>
+            <p>Jadwal praktikum yang ada ajukan akan diperiksa oleh admin. Jika pengajuan Anda diterima, maka jadwal praktikum Anda akan tampil di <a href="jadwal.php" class="text-decoration-none">Daftar Praktikum Matematika</a>.</p>
+
+            <div class="card mt-4 mb-3">
+              <div class="card-header fw-bold">
+                Nama Asisten
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['nama'] ?>
+              </div>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Mata Kuliah
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['matkul'] ?>
+              </div>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Semester
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['semester'] ?>
+              </div>
+            </div>
+
+            <div class="card mt-4 mb-3">
+              <div class="card-header fw-bold">
+                Program Studi
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['prodi'] ?>
+              </div>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Laboratorium
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['lab'] ?>
+              </div>
+            </div>
+
+            <div class="card mb-3">
+              <div class="card-header fw-bold">
+                Hari
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['hari'] ?>
+              </div>
+            </div>
+
+            <div class="card mt-4 mb-3">
+              <div class="card-header fw-bold">
+                Jam
+              </div>
+              <div class="card-body">
+                <?php echo $_GET['jamMulai']."  s/d  ".$_GET['jamAkhir']; ?>
+              </div>
+            </div>
+            <a href="ajukan.php" class="btn btn-primary mt-2">Kembali</a>
           </div>
-          <!-- end jadwal -->
         </div>
-        <!-- end tabel -->
+          </div>
+        </div>
+        <!-- end form -->
       </div>
     </section>
     <!-- end content -->
@@ -166,6 +194,16 @@
       <p class="pt-5">Created by <i class="far fa-copyright"></i> 2021 <a href="http://fmipa.uho.ac.id/" class="fw-bold text-white">LabMIPA UHO</a></p>
     </footer>
     <!-- EndFooter -->
+
+<script src="../alert/sweetalert2.all.min.js"></script>
+<script>
+      var alert = true;
+      if(alert) {
+        Swal.fire('BERHASIL','Data Pengajuan Anda telah terkirim','success');
+      }
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <!-- bootstrap js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -178,18 +216,5 @@
       });
     </script>
     <!-- End AOS -->
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
-
-    <script>
-    $(document).ready(function() {
-    $('#example').DataTable();
-    } );
-    </script>
   </body>
 </html>

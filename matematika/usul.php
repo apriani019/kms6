@@ -1,3 +1,76 @@
+<?php
+  include ('../koneksi.php');
+  $nama = $jenis = $jumlah = $keterangan = $errName = $errJenis = $errJumlah = $errFoto = "";
+  
+  if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $direktori = "upload_alat/";
+    $nama_file = $_FILES['foto']['name'];
+    move_uploaded_file($_FILES['foto']['tmp_name'], $direktori.$nama_file);
+
+    if(empty(trim($_POST['namaAlatBahan']))) {
+      $errName = "<div class='alert alert-danger alert-dismissible fade show ' role='alert' style='width:34%; height:7px; font-size:14px;'>
+          <div style='margin-top:-9px'>
+            <i class='fas fa-exclamation-triangle me-2'></i>Kolom ini wajib diisi!
+          </div>
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style='margin-top:-9px'></button>
+        </div>";
+    } else {
+      $nama = $_POST['namaAlatBahan'];
+    }
+
+    if($_POST['jenis'] == "Tidak ada") {
+      $errJenis = "<div class='alert alert-danger alert-dismissible fade show ' role='alert' style='width:34%; height:7px; font-size:14px;'>
+          <div style='margin-top:-9px'>
+            <i class='fas fa-exclamation-triangle me-2'></i>Kolom ini wajib diisi!
+          </div>
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style='margin-top:-9px'></button>
+        </div>";
+    } else {
+      $jenis = $_POST['jenis'];
+    }
+
+    if(empty(trim($_POST['jumlah']))) {
+      $errJumlah = "<div class='alert alert-danger alert-dismissible fade show ' role='alert' style='width:34%; height:7px; font-size:14px;'>
+          <div style='margin-top:-9px'>
+            <i class='fas fa-exclamation-triangle me-2'></i>Kolom ini wajib diisi!
+          </div>
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style='margin-top:-9px'></button>
+        </div>";
+    } else {
+      $jumlah = $_POST['jumlah'];
+    }
+
+    if(empty(trim($nama_file)) && $jenis == "Kerusakan alat") {
+      $errFoto = "<div class='alert alert-danger alert-dismissible fade show ' role='alert' style='width:50%; height:7px; font-size:14px;'>
+          <div style='margin-top:-9px'>
+            <i class='fas fa-exclamation-triangle me-2'></i>Kolom ini wajib diisi untuk menunjukkan alat yang rusak!
+          </div>
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style='margin-top:-9px'></button>
+        </div>";
+    } else if(empty(trim($nama_file)) && $jenis == "Alat tidak berfungsi") {
+      $errFoto = "<div class='alert alert-danger alert-dismissible fade show ' role='alert' style='width:60%; height:7px; font-size:14px;'>
+          <div style='margin-top:-9px'>
+            <i class='fas fa-exclamation-triangle me-2'></i>Kolom ini wajib diisi untuk menunjukkan alat yang tidak berfungsi!
+          </div>
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close' style='margin-top:-9px'></button>
+        </div>";
+    }
+
+    if($_POST['keterangan']) {
+      $keterangan = $_POST['keterangan'];
+    }
+
+    if(empty($errName) && empty($errJenis) && empty($errJumlah) && empty($errFoto)) {
+      mysqli_query($connect, "INSERT INTO usul_mtk SET
+      nama_alatbahan = '$_POST[namaAlatBahan]',
+      jenis = '$_POST[jenis]',
+      jumlah = '$_POST[jumlah]',
+      nama_file = '$nama_file',
+      keterangan = '$_POST[keterangan]'") or die (mysqli_error($connect));
+      header("location:hasil_usul.php?nama=$_POST[namaAlatBahan]&jenis=$_POST[jenis]&jumlah=$_POST[jumlah]&nama_file=$_POST[nama_file]&keterangan=$_POST[keterangan]");
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -105,8 +178,8 @@
           <!-- breadcrumb -->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
-              <li class="breadcrumb-item"><a href="dashboard.php">Matematika</a></li>
+              <li class="breadcrumb-item "><a href="../index.php" class="text-decoration-none">Home</a></li>
+              <li class="breadcrumb-item "><a href="dashboard.php" class="text-decoration-none">Matematika</a></li>
               <li class="breadcrumb-item active" aria-current="page">Pengusulan Alat dan Bahan</li>
             </ol>
           </nav>
@@ -116,16 +189,23 @@
           <div class="container mt-5 mb-4">
             <div class="alert alert-primary text-center mt-3 mb-4">FORMULIR PENGUSULAN ALAT DAN BAHAN</div>
 
-            <form action="hasil_usul.php" method="post" enctype="multipart/form-data">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+
+              <!-- kolom nama alat/bahan -->
               <div class="mb-4">
                 <label for="namaAlatBahan" class="form-label">Nama Alat/Bahan</label>
-                <input type="text" class="form-control" id="namaAlatBahan" name="namaAlatBahan" aria-describedby="namaAB" placeholder="Nama">
+                <!-- validasi notifikasi eror -->
+                <?php echo $errName;?>
+                <input type="text" class="form-control" id="namaAlatBahan" name="namaAlatBahan" aria-describedby="namaAB" placeholder="Nama" value="<?php echo $nama; ?>">
                 <div id="namaAB" class="form-text">Masukkan nama alat/bahan yang akan diusulkan</div>
               </div>
 
+              <!-- kolom jenis pengusulan -->
               <div class="mb-4">
                 <label for="jenis" class="form-label">Jenis Pengusulan</label>
-                <select class="form-select" aria-label="Default select example" id="jenis" name="jenis" >
+                <!-- validasi notifikasi eror -->
+                <?php echo $errJenis;?>
+                <select class="form-select" aria-label="Default select example" id="jenis" name="jenis">
                   <option value="Tidak ada" selected>--pilih kriteria--</option>
                   <option value="Kerusakan alat">Kerusakan alat</option>
                   <option value="Alat tidak berfungsi">Alat tidak berfungsi</option>
@@ -134,26 +214,33 @@
                 </select>
               </div>
 
+              <!-- kolom jumlah -->
               <div class="mb-4">
                 <label for="jumlah" class="form-label">Jumlah</label>
-                <input type="text" class="form-control" id="jumlah" name="jumlah" aria-describedby="jumlah" placeholder="1">
+                <!-- validasi notifikasi eror -->
+                <?php echo $errJumlah;?>
+                <input type="number" min="1" max="30" class="form-control" id="jumlah" name="jumlah" aria-describedby="jumlah" placeholder="1" value="<?php echo $jumlah; ?>">
                 <div id="jumlah" class="form-text">Masukkan jumlah alat/bahan</div>
               </div>
-
+               
+              <!-- kolom upload gambar -->
               <div class="mb-3" >
-                <label for="foto" class="form-label">Foto Alat/Bahan</label>
-                <input type="file" class="form-control" id="foto" name="foto" rows="3" aria-describedby="foto" placeholder="Masukkan teks di sini" ></input>
+                <label for="foto" class="form-label">Gambar Alat</label>
+                <!-- validasi notifikasi eror -->
+                <?php echo $errFoto;?>
+                <input type="file" accept="image/*" class="form-control" id="foto" name="foto" rows="3" aria-describedby="foto" placeholder="Masukkan teks di sini" ></input>
                 <div id="foto" class="form-text">Masukkan gambar jika Anda memilih 'Kerusakan Alat' atau 'Alat Tidak Berfungsi' pada kolom Jenis Pengusulan</div>
               </div>
 
+              <!-- kolom keterangan -->
               <div class="mb-3" >
                 <label for="keterangan" class="form-label">Keterangan</label>
-                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" aria-describedby="keterangan" placeholder="Masukkan teks di sini" ></textarea>
+                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" aria-describedby="keterangan" placeholder="Masukkan teks di sini" value="<?php echo $keterangan; ?>"></textarea>
                 <div id="keterangan" class="form-text">Jika ada keterangan tambahan, isi kolom ini</div>
               </div>
 
 
-              <button type="submit" name="submit" class="btn btn-primary" >Kirim</button>
+              <button type="submit" name="submit" class="btn btn-primary" id="tombol" >Kirim</button>
 
             </form>
           </div>
@@ -173,6 +260,12 @@
           e.preventDefault();
         });
       });
+    </script>
+
+    <script>
+      if(window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+      }
     </script>
 
     <!-- Footer -->
@@ -196,3 +289,4 @@
     <!-- End AOS -->
   </body>
 </html>
+

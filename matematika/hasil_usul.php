@@ -103,36 +103,16 @@
           <!-- breadcrumb -->
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
-              <li class="breadcrumb-item"><a href="dashboard.php">Matematika</a></li>
+              <li class="breadcrumb-item"><a href="../index.php" class="text-decoration-none">Home</a></li>
+              <li class="breadcrumb-item"><a href="dashboard.php" class="text-decoration-none">Matematika</a></li>
               <li class="breadcrumb-item active" aria-current="page">Pengusulan Alat dan Bahan</li>
             </ol>
           </nav>
           <!-- end judul -->
 
           <!-- isi form -->
-          <div class="container mt-5 mb-4">
+          <div class="container mt-5 mb-4"> 
             
-             <?php
-                include "../koneksi.php";
-
-                if(isset($_POST['submit'])) {
-                  $direktori = "ipload_alat/";
-                  $nama_file = $_FILES['foto']['name'];
-                  move_uploaded_file($_FILES['foto']['tmp_name'], $direktori.$nama_file);
-                  mysqli_query($conn, "INSERT INTO usul SET
-                  nama_alat_bahan = '$_POST[namaAlatBahan]',
-                  jenis = '$_POST[jenis]',
-                  jumlah = '$_POST[jumlah]',
-                  file = '$nama_file',
-                  keterangan = '$_POST[keterangan]'") or die (mysqli_error($conn));
-                  
-                  echo "<script>alert('Data Anda telah terkirim!')</script>";
-                }
-              ?>
-               
-            
-
             <div class="alert alert-primary text-center mt-4 mb-4">DATA PENGUSULAN ALAT DAN BAHAN</div>
 
             <p>Terima kasih telah melakukan pengusulan. Data Anda telah masuk dalam Daftar Usulan dan akan diperiksa oleh Kepala Laboratorium Matematika.</p>
@@ -142,7 +122,7 @@
                 Nama Alat/Bahan
               </div>
               <div class="card-body">
-                <?php echo $_POST['namaAlatBahan'] ?>
+                <?php echo $_GET['nama'] ?>
               </div>
             </div>
 
@@ -151,7 +131,7 @@
                 Jenis Pengusulan
               </div>
               <div class="card-body">
-                <?php echo $_POST['jenis'] ?>
+                <?php echo $_GET['jenis'] ?>
               </div>
             </div>
 
@@ -160,16 +140,22 @@
                 Jumlah
               </div>
               <div class="card-body">
-                <?php echo $_POST['jumlah'] ?>
+                <?php echo $_GET['jumlah'] ?>
               </div>
             </div>
 
             <div class="card mb-3">
               <div class="card-header fw-bold">
-                Nama File Gambar
+                Gambar Alat
               </div>
               <div class="card-body">
-               <img src="upload_alat/<?php echo  $nama_file ?>" style="width: 200px">
+               <?php 
+                  if($_GET['nama_file']) {
+                    echo  "<img src='upload_alat/$_GET[nama_file]' style='width: 200px'>";
+                  } else {
+                    echo "Tidak ada gambar";
+                  }
+                ?>
               </div>
             </div>
 
@@ -178,7 +164,13 @@
                 Keterangan
               </div>
               <div class="card-body">
-                <?php echo $_POST['keterangan'] ?>
+                <?php 
+                  if($_GET['keterangan']) {
+                    echo $_GET['keterangan'];
+                   } else {
+                     echo "Tidak ada keterangan";
+                   } 
+                ?>
               </div>
             </div>
 
@@ -196,15 +188,15 @@
     </footer>
     <!-- EndFooter -->
 
-    <script>
-      if(window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
+<script src="../alert/sweetalert2.all.min.js"></script>
+<script>
+      var alert = true;
+      if(alert) {
+        Swal.fire('BERHASIL','Data Anda telah terkirim','success');
       }
     </script>
 
-<script src="../alert/sweetalert2.all.min.js"></script>
-
- 
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <!-- bootstrap js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>

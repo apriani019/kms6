@@ -3,10 +3,10 @@
 $server = "localhost";
 $user = "root";
 $pass = "";
-$database = "registrasidb";
-$conn = mysqli_connect($server, $user, $pass, $database);
- 
-if (!$conn) {
+$database = "dblabmipa";
+$connect = mysqli_connect($server, $user, $pass, $database);
+
+if (!$connect) {
     die("<script>alert('Gagal tersambung dengan database.')</script>");
 }
  
